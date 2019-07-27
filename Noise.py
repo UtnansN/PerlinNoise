@@ -1,8 +1,6 @@
 import random
 import numpy as np
 import matplotlib.pyplot as plt
-
-
 # from mpl_toolkits.mplot3d import axes3d
 
 
@@ -42,28 +40,34 @@ values = []
 for y in range(pixels_y):
     values.append([])
     for x in range(pixels_x):
+        # Variables to help computing
+        yval = int(y / pps_y)
+        xval = int(x / pps_x)
+        y_st = y % pps_y * step_y
+        x_st = x % pps_x * step_x
+
         # Dot product of each gradient and distance to chosen pixel in between the gradient edges
-        upper_left_product = np.dot(gradients[int(y / pps_y)][int(x / pps_x)],
-                                    ((x % pps_x) * step_x, (y % pps_y) * step_y))
+        upper_left_product = np.dot(gradients[yval][xval],
+                                    (x_st, y_st))
 
-        upper_right_product = np.dot(gradients[int(y / pps_y)][int(x / pps_x) + 1],
-                                     ((x % pps_x) * step_x - 1, (y % pps_y) * step_y))
+        upper_right_product = np.dot(gradients[yval][xval + 1],
+                                     (x_st - 1, y_st))
 
-        lower_left_product = np.dot(gradients[int(y / pps_y) + 1][int(x / pps_x)],
-                                    ((x % pps_x) * step_x, (y % pps_y) * step_y - 1))
+        lower_left_product = np.dot(gradients[yval + 1][xval],
+                                    (x_st, y_st - 1))
 
-        lower_right_product = np.dot(gradients[int(y / pps_y) + 1][int(x / pps_x) + 1],
-                                     ((x % pps_x) * step_x - 1, (y % pps_y) * step_y - 1))
+        lower_right_product = np.dot(gradients[yval + 1][xval + 1],
+                                     (x_st - 1, y_st - 1))
 
         # Linear interpolations for upper and lower dot products + fade function.
-        upper_interpolation = upper_left_product + fade((x % pps_x) * step_x) * (
+        upper_interpolation = upper_left_product + fade(x_st) * (
                 upper_right_product - upper_left_product)
 
-        lower_interpolation = lower_left_product + fade((x % pps_x) * step_x) * (
+        lower_interpolation = lower_left_product + fade(x_st) * (
                 lower_right_product - lower_left_product)
 
         # Linear interpolation for y axis
-        values[y].append(upper_interpolation + fade((y % pps_y) * step_y) * (lower_interpolation - upper_interpolation))
+        values[y].append(upper_interpolation + fade(y_st) * (lower_interpolation - upper_interpolation))
 
 plt.imshow(values, cmap=plt.get_cmap('Greys'))
 plt.show()
