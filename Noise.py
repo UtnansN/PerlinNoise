@@ -1,6 +1,8 @@
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+
+
 # from mpl_toolkits.mplot3d import axes3d
 
 
@@ -28,9 +30,12 @@ pps_y = pixels_y / (vector_grid_y - 1)
 step_x = 1 / pps_x
 step_y = 1 / pps_y
 
-possible_grad_values = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
+gradients = [[(random.uniform(-1, 1), random.uniform(-1, 1)) for x in range(vector_grid_x)]
+             for y in range(vector_grid_y)]
 
-gradients = [[random.choice(possible_grad_values) for x in range(vector_grid_x)] for y in range(vector_grid_y)]
+# An alternative gradient implementation:
+# possible_grad_values = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
+# gradients = [[random.choice(possible_grad_values) for x in range(vector_grid_x)] for y in range(vector_grid_y)]
 
 # Main loop for calculating each pixel value
 values = []
